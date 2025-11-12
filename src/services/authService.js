@@ -1,8 +1,6 @@
 // src/services/authService.js
 
-// Use the `VITE_BACK_END_SERVER_URL` environment variable to set the base URL.
-// Note the `/auth` path added to the server URL that forms the base URL for
-// all the requests in this service.
+
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/auth`;
 
 const signUp = async (formData) => {
@@ -13,7 +11,22 @@ const signUp = async (formData) => {
       body: JSON.stringify(formData),
     });
 
-    const data = await res.json();
+    const text = await res.text();
+    
+    if (!text) {
+      throw new Error('Empty response from server. Check if backend is running and endpoint is correct.');
+    }
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (parseErr) {
+      throw new Error(`Invalid JSON response: ${text.substring(0, 100)}`);
+    }
+
+    if (!res.ok) {
+      throw new Error(data.err || `HTTP error! status: ${res.status}`);
+    }
 
     if (data.err) {
       throw new Error(data.err);
@@ -28,7 +41,7 @@ const signUp = async (formData) => {
     throw new Error('Invalid response from server');
   } catch (err) {
     console.log(err);
-    throw new Error(err);
+    throw err instanceof Error ? err : new Error(String(err));
   }
 };
 
@@ -40,7 +53,22 @@ const signIn = async (formData) => {
       body: JSON.stringify(formData),
     });
 
-    const data = await res.json();
+    const text = await res.text();
+    
+    if (!text) {
+      throw new Error('Empty response from server. Check if backend is running and endpoint is correct.');
+    }
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (parseErr) {
+      throw new Error(`Invalid JSON response: ${text.substring(0, 100)}`);
+    }
+
+    if (!res.ok) {
+      throw new Error(data.err || `HTTP error! status: ${res.status}`);
+    }
 
     if (data.err) {
       throw new Error(data.err);
@@ -54,7 +82,7 @@ const signIn = async (formData) => {
     throw new Error('Invalid response from server');
   } catch (err) {
     console.log(err);
-    throw new Error(err);
+    throw err instanceof Error ? err : new Error(String(err));
   }
 };
 

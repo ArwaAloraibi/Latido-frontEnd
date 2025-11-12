@@ -27,6 +27,7 @@ const App = () => {
             <Route path='/favs' element={<h1>Favs</h1>}/>
             <Route path='/profile' element={<h1>{user.username}</h1>}/>
             <Route path='/orders' element={<h1>ORDERS</h1>}/>
+            
           </>
             :
             <Route path='/' element={<Landing/>}/>
