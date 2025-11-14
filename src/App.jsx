@@ -11,6 +11,7 @@ import SignInForm from './components/SignInForm/SignInForm';
 import Landing from './components/Landing/Landing';
 import Dashboard from './components/Dashboard/Dashboard';
 import { UserContext } from './contexts/UserContext';
+import AlbumList from './components/AlbumList/AlbumList';
 
 
 
@@ -48,6 +49,7 @@ useEffect(() => {
           user ?
           <>
             <Route path='/' element={<Dashboard/>}/>
+            <Route path='/albums' element={<AlbumList albums={albums} />}/>
             <Route path='/products' element={<h1>Producs</h1>}/>
             <Route path='/favs' element={<h1>Favs</h1>}/>
             <Route path='/profile' element={<h1>{user.username}</h1>}/>
