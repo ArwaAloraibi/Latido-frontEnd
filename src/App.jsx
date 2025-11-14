@@ -3,6 +3,8 @@
 import { Routes, Route } from 'react-router'; // Import React Router
 import { useState, useEffect, useContext } from 'react';
 import * as albumService from './services/albumService';
+import * as playlistService from './services/playlistService';
+
 
 import NavBar from './components/NavBar/NavBar';
 // Import the SignUpForm component
@@ -18,6 +20,8 @@ import AlbumList from './components/AlbumList/AlbumList';
 const App = () => {
   const { user } = useContext(UserContext);
   const [albums, setAlbums] = useState([]);
+  const [playlists, setplaylists] = useState([]);
+
 
 useEffect(() => {
     const fetchAlbums = async () => {
@@ -34,6 +38,20 @@ useEffect(() => {
     fetchAlbums();
   }, []);
 
+useEffect(() => {
+    const fetchplaylists = async () => {
+   try{ 
+    const fetchedplaylists = await playlistService.index();
+      if (fetchedplaylists.err) {
+          throw new Error(fetchedplaylists.err);
+      }
+      setplaylists(fetchedplaylists);
+    }catch (err){
+    console.log(err);
+    }
+  };
+    fetchplaylists();
+  }, []);
 
 
 
@@ -50,6 +68,7 @@ useEffect(() => {
           <>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/albums' element={<AlbumList albums={albums} />}/>
+            <Route path='/playlists' element={<PlaylistList playlists={playlists} />}/>
             <Route path='/products' element={<h1>Producs</h1>}/>
             <Route path='/favs' element={<h1>Favs</h1>}/>
             <Route path='/profile' element={<h1>{user.username}</h1>}/>
