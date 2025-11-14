@@ -5,7 +5,7 @@ import { useState, useEffect, useContext } from 'react';
 import * as albumService from './services/albumService';
 import * as playlistService from './services/playlistService';
 import * as songService from './services/songService';
-
+import AlbumDetail from './components/AlbumDetail/AlbumDetail';
 
 
 import NavBar from './components/NavBar/NavBar';
@@ -22,10 +22,9 @@ import AlbumList from './components/AlbumList/AlbumList';
 const App = () => {
   const { user } = useContext(UserContext);
   const [albums, setAlbums] = useState([]);
+  const [selectedAlbum, setSelectedAlbum] = useState(null)
   const [playlists, setPlaylists] = useState([]);
   const [songs, setSongs] = useState([]);
-
-
 
 useEffect(() => {
     const fetchAlbums = async () => {
@@ -73,7 +72,9 @@ useEffect(() => {
   }, []);
 
 
-
+ const handleSelectAlbum = (album) => {
+    setSelectedAlbum(album)
+  }
 
   return (
     <>
@@ -84,9 +85,10 @@ useEffect(() => {
           user ?
           <>
             <Route path='/' element={<Dashboard/>}/>
-            <Route path='/albums' element={<AlbumList albums={albums} />}/>
+            <Route path='/albums' element={<AlbumList albums={albums} handleSelectAlbum={handleSelectAlbum}/>}/>
             <Route path='/playlists' element={<PlaylistList playlists={playlists} />}/>
             <Route path='/songs' element={<SongList songs={songs} />}/>
+            <Route path='/albums' element={<AlbumDetail albums={albums} selectedAlbum={selectedAlbum}/>}/>
             <Route path='/products' element={<h1>Producs</h1>}/>
             <Route path='/favs' element={<h1>Favs</h1>}/>
             <Route path='/profile' element={<h1>{user.username}</h1>}/>
