@@ -14,10 +14,10 @@ const AlbumList = (props) => {
             <li 
             key={album._id}  
             style={{ cursor: 'pointer', color: "#646CFF" }}
-            onClick={() => console.log(album)}
+            onClick={() => props.handleSelectAlbum(album)}
             >
             {album.name}</li>
-            
+
           ))}
         </ul>
         )}
