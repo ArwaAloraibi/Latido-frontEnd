@@ -1,6 +1,7 @@
 // src/App.jsx
-
 import { Routes, Route } from 'react-router'; // Import React Router
+import { useState, useEffect } from 'react';
+import * as albumService from './services/albumService';
 
 import NavBar from './components/NavBar/NavBar';
 // Import the SignUpForm component
@@ -11,8 +12,21 @@ import Dashboard from './components/Dashboard/Dashboard';
 import { useContext } from 'react';
 import { UserContext } from './contexts/UserContext';
 
+
+
 const App = () => {
   const { user } = useContext(UserContext);
+  const [albums, setAlbums]=useState([]);
+   
+
+useEffect(() => {
+  const fetchAlbums = async () => {
+    const fetchedalbums = await albumService.index();
+        setAlbums(fetchedalbums);
+
+  };
+  fetchAlbums();
+}, []);
 
   return (
     <>
