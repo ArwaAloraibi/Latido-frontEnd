@@ -7,6 +7,7 @@ import * as playlistService from './services/playlistService';
 import * as songService from './services/songService';
 import AlbumDetail from './components/AlbumDetail/AlbumDetail';
 import PlaylistDetail from './components/PlaylistDetail/PlaylistDetail';
+import SongDetail from './components/SongDetail/SongDetail';
 
 
 import NavBar from './components/NavBar/NavBar';
@@ -28,7 +29,7 @@ const App = () => {
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const [songs, setSongs] = useState([]);
-  // const [selectedSong, setSelectedSong] = useState(null)
+  const [selectedSong, setSelectedSong] = useState(null)
 
 
 useEffect(() => {
@@ -85,10 +86,10 @@ useEffect(() => {
     setSelectedPlaylist(playlist)
   }
 
-  // const handleSelectSong  =(song)=>{
-  //     setSelectedSong(song)
+  const handleSelectSong  =(song)=>{
+      setSelectedSong(song)
 
-  // }
+  }
 
   return (
     <>
@@ -101,9 +102,10 @@ useEffect(() => {
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/albums' element={<AlbumList albums={albums} handleSelectAlbum={handleSelectAlbum}/>}/>
             <Route path='/playlists' element={<PlaylistList playlists={playlists} handleSelectPlaylist={handleSelectPlaylist} />}/>
-            <Route path='/songs' element={<SongList songs={songs}/>}/>
+            <Route path='/songs' element={<SongList songs={songs} handleSelectSong={handleSelectSong} />}/>
             <Route path='/albums' element={<AlbumDetail albums={albums} selectedAlbum={selectedAlbum}/>}/>
             <Route path='/playlists' element={<PlaylistDetail playlists={playlists} selectedPlaylist={selectedPlaylist}/>}/>
+            <Route path='/songs' element={<SongDetail songs={songs} selectedSong={selectedSong}/>}/>
             <Route path='/products' element={<h1>Producs</h1>}/>
             <Route path='/favs' element={<h1>Favs</h1>}/>
             <Route path='/profile' element={<h1>{user.username}</h1>}/>
