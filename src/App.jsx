@@ -1,4 +1,6 @@
 // src/App.jsx
+import { useState, useEffect } from 'react';
+import * as albumService from './services/albumService';
 
 import { Routes, Route } from 'react-router'; // Import React Router
 
@@ -13,7 +15,30 @@ import { UserContext } from './contexts/UserContext';
 
 const App = () => {
   const { user } = useContext(UserContext);
+    const [albums, setAlbums] = useState([]);
 
+useEffect(() => {
+    const fetchAlbums = async () => {
+   try{ 
+    const fetchedAlbums = await albumService.index();
+      if (fetchedAlbums.err) {
+          throw new Error(fetchedAlbums.err);
+      }
+      setAlbums(fetchedAlbums);
+    }catch (err){
+
+    cpmsole.log(err);
+    }
+  };
+    fetchAlbums();
+  }, []);
+
+
+
+
+
+
+  
   return (
     <>
       <NavBar />
