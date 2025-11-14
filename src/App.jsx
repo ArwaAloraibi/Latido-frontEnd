@@ -6,6 +6,8 @@ import * as albumService from './services/albumService';
 import * as playlistService from './services/playlistService';
 import * as songService from './services/songService';
 import AlbumDetail from './components/AlbumDetail/AlbumDetail';
+import PlaylistDetail from './components/PlaylistDetail/PlaylistDetail';
+import SongDetail from './components/SongDetail/SongDetail';
 
 
 import NavBar from './components/NavBar/NavBar';
@@ -16,6 +18,7 @@ import Landing from './components/Landing/Landing';
 import Dashboard from './components/Dashboard/Dashboard';
 import { UserContext } from './contexts/UserContext';
 import AlbumList from './components/AlbumList/AlbumList';
+import SongList from './components/SongList/SongList';
 
 
 
@@ -24,7 +27,10 @@ const App = () => {
   const [albums, setAlbums] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(null)
   const [playlists, setPlaylists] = useState([]);
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const [songs, setSongs] = useState([]);
+  const [selectedSong, setSelectedSong] = useState(null)
+
 
 useEffect(() => {
     const fetchAlbums = async () => {
@@ -76,6 +82,15 @@ useEffect(() => {
     setSelectedAlbum(album)
   }
 
+  const handleSelectPlaylist =(playlist)=>{
+    setSelectedPlaylist(playlist)
+  }
+
+  const handleSelectSong  =(song)=>{
+      setSelectedSong(song)
+
+  }
+
   return (
     <>
       <NavBar />
@@ -86,9 +101,11 @@ useEffect(() => {
           <>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/albums' element={<AlbumList albums={albums} handleSelectAlbum={handleSelectAlbum}/>}/>
-            <Route path='/playlists' element={<PlaylistList playlists={playlists} />}/>
-            <Route path='/songs' element={<SongList songs={songs} />}/>
+            <Route path='/playlists' element={<PlaylistList playlists={playlists} handleSelectPlaylist={handleSelectPlaylist} />}/>
+            <Route path='/songs' element={<SongList songs={songs} handleSelectSong={handleSelectSong} />}/>
             <Route path='/albums' element={<AlbumDetail albums={albums} selectedAlbum={selectedAlbum}/>}/>
+            <Route path='/playlists' element={<PlaylistDetail playlists={playlists} selectedPlaylist={selectedPlaylist}/>}/>
+            <Route path='/songs' element={<SongDetail songs={songs} selectedSong={selectedSong}/>}/>
             <Route path='/products' element={<h1>Producs</h1>}/>
             <Route path='/favs' element={<h1>Favs</h1>}/>
             <Route path='/profile' element={<h1>{user.username}</h1>}/>
