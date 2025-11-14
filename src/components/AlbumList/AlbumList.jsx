@@ -11,7 +11,13 @@ const AlbumList = (props) => {
         ) : (
         <ul>
           {props.albums.map((album) => (
-            <li key={album._id}>{album.name}</li>
+            <li 
+            key={album._id}  
+            style={{ cursor: 'pointer', color: "#646CFF" }}
+            onClick={() => console.log(album)}
+            >
+            {album.name}</li>
+            
           ))}
         </ul>
         )}
