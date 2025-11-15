@@ -21,10 +21,11 @@ const SignUpForm = () => {
     username: '',
     password: '',
     passwordConf: '',
+    role: '',
   });
 
 
-  const { username, password, passwordConf } = formData;
+  const { username, password, passwordConf, role } = formData;
 
   const handleChange = (evt) => {
     setMessage('');
@@ -47,7 +48,7 @@ const SignUpForm = () => {
   };
 
   const isFormInvalid = () => {
-    return !(username && password && password === passwordConf);
+    return !(username && password && password === passwordConf && role);
   };
 
   return (
@@ -87,6 +88,20 @@ const SignUpForm = () => {
             onChange={handleChange}
             required
           />
+        </div>
+        <div>
+          <label htmlFor='role'>Role:</label>
+          <select
+            id='role'
+            value={role}
+            name='role'
+            onChange={handleChange}
+            required
+          >
+            <option value=''>Select a role</option>
+            <option value='listener'>Listener</option>
+            <option value='artist'>Artist</option>
+          </select>
         </div>
         <div>
           <button disabled={isFormInvalid()}>Sign Up</button>
