@@ -113,10 +113,6 @@ useEffect(() => {
             <Route path='/songs' element={<SongList songs={songs} handleSelectSong={handleSelectSong} />}/>
             <Route path='/songs/:songId' element={<SongDetail selectedSong={selectedSong}/>}/>
             <Route path='/profile' element={<h1>{user.username}</h1>}/>
-            <Route path='/albums/detail' element={<AlbumDetail albums={albums} selectedAlbum={selectedAlbum} />}/>
-            <Route path='/playlists/detail' element={<PlaylistDetail playlists={playlists} selectedPlaylist={selectedPlaylist} />}/>
-            <Route path='/songs/detail' element={<SongDetail songs={songs} selectedSong={selectedSong} />}/>
-            <Route path='/profile' element={<h1>{user.username}</h1>} />
             <Route path='/playlists/:playlistId' element={<PlaylistDetailWrapper playlists={playlists} />} />
             
           </>
