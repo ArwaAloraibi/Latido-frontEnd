@@ -94,7 +94,7 @@ const App = () => {
         {user ? (
           <>
             <Route path='/' element={<Dashboard />} />
-
+            
             <Route
               path='/albums'
               element={<AlbumList albums={albums} handleSelectAlbum={handleSelectAlbum} />}
@@ -123,10 +123,7 @@ const App = () => {
               element={<SongDetail songs={songs} selectedSong={selectedSong} />}
             />
 
-            <Route path='/products' element={<h1>Products</h1>} />
-            <Route path='/favs' element={<h1>Favs</h1>} />
             <Route path='/profile' element={<h1>{user.username}</h1>} />
-            <Route path='/orders' element={<h1>ORDERS</h1>} />
           </>
         ) : (
           <Route path='/' element={<Landing />} />
