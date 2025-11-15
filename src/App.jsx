@@ -103,14 +103,13 @@ useEffect(() => {
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/albums' element={<AlbumList albums={albums} handleSelectAlbum={handleSelectAlbum}/>}/>
             <Route path='/playlists' element={<PlaylistList playlists={playlists} handleSelectPlaylist={handleSelectPlaylist} />}/>
-            <Route path='/songs' element={<SongList songs={songs} handleSelectSong={handleSelectSong} />}/>
+            <Route path='/songs' element={<SongList songs={songs} handleSelectSong={handleSelectSong} />}/>Edit
             <Route path='/playlists/create' element={<CreatePlaylist />} />
             <Route path='/profile' element={<h1>{user.username}</h1>}/>
             <Route path='/albums/detail' element={<AlbumDetail albums={albums} selectedAlbum={selectedAlbum} />}/>
             <Route path='/playlists/detail' element={<PlaylistDetail playlists={playlists} selectedPlaylist={selectedPlaylist} />}/>
             <Route path='/songs/detail' element={<SongDetail songs={songs} selectedSong={selectedSong} />}/>
             <Route path='/profile' element={<h1>{user.username}</h1>} />
-            <Route path='/orders' element={<h1>ORDERS</h1>}/>
             
           </>
             :
