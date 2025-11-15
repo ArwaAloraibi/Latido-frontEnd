@@ -20,7 +20,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import { UserContext } from './contexts/UserContext';
 import AlbumList from './components/AlbumList/AlbumList';
 import SongList from './components/SongList/SongList';
-
+import './App.css';
 
 
 const App = () => {
