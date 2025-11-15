@@ -2,7 +2,7 @@ const PlaylistDetail = ({ selectedPlaylist }) => {
   if (!selectedPlaylist) {
     return (
       <div>
-        <h2>No playlist selected. Please select a playlist to view details.</h2>
+        <h2>No songs selected. Please select songs to view details.</h2>
       </div>
     );
   }
