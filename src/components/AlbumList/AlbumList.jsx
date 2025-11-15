@@ -1,7 +1,29 @@
 import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
 
 const AlbumList = (props) => {
+  
   const navigate = useNavigate();
+  const [albums, setAlbums] = useState([]);
+
+  useEffect(() => {
+    const fetchAlbums = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACK_END_SERVER_URL}/albums`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        const data = await res.json();
+        if (data.err) throw new Error(data.err);
+        setAlbums(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchAlbums();
+  }, []);
+
 
   const handleAlbumClick = (album) => {
     props.handleSelectAlbum(album);

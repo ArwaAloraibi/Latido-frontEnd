@@ -22,21 +22,22 @@ const AlbumDetail = (props) => {
           <div>
             <h3>Songs:</h3>
             <ul>
-              {album.songs.map((song, index) => (
-                <li key={song._id || index} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                  {song.coverImg && (
-                    <img 
-                      src={song.coverImg} 
-                      alt={song.name} 
-                      style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }} 
-                    />
-                  )}
-                  <div>
-                    <div>{song.name}</div>
-                    {song.duration && <small style={{ color: '#888' }}>{song.duration}</small>}
-                  </div>
-                </li>
-              ))}
+                  {album.songs.map((song, index) => (
+                    <li key={song._id || index} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                      {song.coverImg && (
+                        <img 
+                          src={song.coverImg} 
+                          alt={song.name} 
+                          style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }} 
+                        />
+                      )}
+                      <div>
+                        <div><strong>{song.name}</strong></div>
+                        {song.artist && <div><small style={{ color: '#555' }}>Artist: {song.artist}</small></div>}
+                        {song.duration && <div><small style={{ color: '#888' }}>Duration: {song.duration} min</small></div>}
+                      </div>
+                    </li>
+                  ))}
             </ul>
           </div>
         )}
