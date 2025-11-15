@@ -15,6 +15,7 @@ const AlbumList = (props) => {
           },
         });
         const data = await res.json();
+        console.log(data)
         if (data.err) throw new Error(data.err);
         setAlbums(data);
       } catch (err) {
@@ -36,11 +37,11 @@ const AlbumList = (props) => {
     <div>
       <h1>Album List</h1>
       <div>
-         {!props.albums.length ? (
+         {!albums.length ? (
           <h2>No Albums Yet!</h2>
         ) : (
         <ul>
-          {props.albums.map((album) => (
+          {albums.map((album) => (
             <li 
             key={album._id}  
             style={{ cursor: 'pointer', color: "#646CFF" }}
