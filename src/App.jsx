@@ -110,7 +110,6 @@ useEffect(() => {
             <Route path='/playlists/detail' element={<PlaylistDetail playlists={playlists} selectedPlaylist={selectedPlaylist} />}/>
             <Route path='/songs/detail' element={<SongDetail songs={songs} selectedSong={selectedSong} />}/>
             <Route path='/profile' element={<h1>{user.username}</h1>} />
-            <Route path='/orders' element={<h1>ORDERS</h1>}/>
             
           </>
             :
