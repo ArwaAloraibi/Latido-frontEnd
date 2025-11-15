@@ -1,6 +1,14 @@
-const AlbumList = (props) => {
+import { useNavigate } from 'react-router';
 
-    console.log(props);
+const AlbumList = (props) => {
+  const navigate = useNavigate();
+
+  const handleAlbumClick = (album) => {
+    props.handleSelectAlbum(album);
+    navigate(`/albums/${album._id}`);
+  };
+
+  console.log(props);
 
   return (
     <div>
@@ -14,7 +22,7 @@ const AlbumList = (props) => {
             <li 
             key={album._id}  
             style={{ cursor: 'pointer', color: "#646CFF" }}
-            onClick={() => props.handleSelectAlbum(album)}
+            onClick={() => handleAlbumClick(album)}
             >
             {album.name}</li>
 
