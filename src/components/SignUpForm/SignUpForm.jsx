@@ -21,11 +21,11 @@ const SignUpForm = () => {
     username: '',
     password: '',
     passwordConf: '',
-    roles: '',
+    role: '',
   });
 
 
-  const { username, password, passwordConf, roles } = formData;
+  const { username, password, passwordConf, role } = formData;
 
   const handleChange = (evt) => {
     setMessage('');
@@ -48,7 +48,7 @@ const SignUpForm = () => {
   };
 
   const isFormInvalid = () => {
-    return !(username && password && password === passwordConf && roles);
+    return !(username && password && password === passwordConf && role);
   };
 
   return (
@@ -92,9 +92,9 @@ const SignUpForm = () => {
         <div>
           <label htmlFor='role'>Role:</label>
           <select
-            id='roles'
-            value={roles}
-            name='roles'
+            id='role'
+            value={role}
+            name='role'
             onChange={handleChange}
             required
           >
