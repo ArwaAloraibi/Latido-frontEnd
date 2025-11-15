@@ -106,12 +106,12 @@ useEffect(() => {
           <>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/albums' element={<AlbumList albums={albums} handleSelectAlbum={handleSelectAlbum}/>}/>
+            <Route path='/albums/:albumId' element={<AlbumDetail selectedAlbum={selectedAlbum}/>}/>
             <Route path='/playlists' element={<PlaylistList playlists={playlists} handleSelectPlaylist={handleSelectPlaylist} />}/>
-            <Route path='/songs' element={<SongList songs={songs} handleSelectSong={handleSelectSong} />}/>
-            <Route path='/albums' element={<AlbumDetail albums={albums} selectedAlbum={selectedAlbum}/>}/>
-            <Route path='/playlists' element={<PlaylistDetail playlists={playlists} selectedPlaylist={selectedPlaylist}/>}/>
-            <Route path='/songs' element={<SongDetail songs={songs} selectedSong={selectedSong}/>}/>
             <Route path='/playlists/create' element={<CreatePlaylist />} />
+            <Route path='/playlists/:playlistId' element={<PlaylistDetail selectedPlaylist={selectedPlaylist}/>}/>
+            <Route path='/songs' element={<SongList songs={songs} handleSelectSong={handleSelectSong} />}/>
+            <Route path='/songs/:songId' element={<SongDetail selectedSong={selectedSong}/>}/>
             <Route path='/profile' element={<h1>{user.username}</h1>}/>
             <Route path='/albums/detail' element={<AlbumDetail albums={albums} selectedAlbum={selectedAlbum} />}/>
             <Route path='/playlists/detail' element={<PlaylistDetail playlists={playlists} selectedPlaylist={selectedPlaylist} />}/>
@@ -131,4 +131,3 @@ useEffect(() => {
 };
 
 export default App;
-
