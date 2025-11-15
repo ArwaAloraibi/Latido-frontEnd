@@ -30,6 +30,8 @@ const NavBar = () => {
           <li>Welcome, {user.username}</li>
           <li><Link to='/'>Dashboard</Link></li>
           <li><Link to='/' onClick={handleSignOut}>Sign Out</Link></li>
+          <li><Link to='/albums'>Albums</Link></li>
+          <li><Link to='/playlist'>Playlists</Link></li>
         </ul>
       ) : (
         <ul>
