@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { UserContext } from "../../context/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 import { createPlaylist } from "../../services/playlistService";
 
 const CreatePlaylist = () => {
