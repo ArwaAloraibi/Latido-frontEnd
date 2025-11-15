@@ -1,6 +1,6 @@
 // src/App.jsx
 
-import { Routes, Route } from 'react-router'; // Import React Router
+import { Routes, Route, useParams } from 'react-router'; // Import React Router
 import { useState, useEffect, useContext } from 'react';
 import * as albumService from './services/albumService';
 import * as playlistService from './services/playlistService';
@@ -21,7 +21,11 @@ import { UserContext } from './contexts/UserContext';
 import AlbumList from './components/AlbumList/AlbumList';
 import SongList from './components/SongList/SongList';
 import './App.css';
-
+const PlaylistDetailWrapper = ({ playlists }) => {
+  const { playlistId } = useParams();
+  const selectedPlaylist = playlists.find((p) => p._id === playlistId);
+  return <PlaylistDetail selectedPlaylist={selectedPlaylist} />;
+};
 
 const App = () => {
   const { user } = useContext(UserContext);
@@ -102,14 +106,18 @@ useEffect(() => {
           <>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/albums' element={<AlbumList albums={albums} handleSelectAlbum={handleSelectAlbum}/>}/>
+            <Route path='/albums/:albumId' element={<AlbumDetail selectedAlbum={selectedAlbum}/>}/>
             <Route path='/playlists' element={<PlaylistList playlists={playlists} handleSelectPlaylist={handleSelectPlaylist} />}/>
-            <Route path='/songs' element={<SongList songs={songs} handleSelectSong={handleSelectSong} />}/>Edit
             <Route path='/playlists/create' element={<CreatePlaylist />} />
+            <Route path='/playlists/:playlistId' element={<PlaylistDetail selectedPlaylist={selectedPlaylist}/>}/>
+            <Route path='/songs' element={<SongList songs={songs} handleSelectSong={handleSelectSong} />}/>
+            <Route path='/songs/:songId' element={<SongDetail selectedSong={selectedSong}/>}/>
             <Route path='/profile' element={<h1>{user.username}</h1>}/>
             <Route path='/albums/detail' element={<AlbumDetail albums={albums} selectedAlbum={selectedAlbum} />}/>
             <Route path='/playlists/detail' element={<PlaylistDetail playlists={playlists} selectedPlaylist={selectedPlaylist} />}/>
             <Route path='/songs/detail' element={<SongDetail songs={songs} selectedSong={selectedSong} />}/>
             <Route path='/profile' element={<h1>{user.username}</h1>} />
+            <Route path='/playlists/:playlistId' element={<PlaylistDetailWrapper playlists={playlists} />} />
             
           </>
             :
@@ -123,4 +131,3 @@ useEffect(() => {
 };
 
 export default App;
-

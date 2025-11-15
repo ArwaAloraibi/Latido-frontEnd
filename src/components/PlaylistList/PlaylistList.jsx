@@ -1,22 +1,31 @@
-const PlaylistList = (props) => {
+import React from "react";
 
-    console.log(props);
-
+const PlaylistList = ({ playlists }) => {
   return (
     <div>
-      <h1>playlist List</h1>
-      <div>
-         {!props.playlists.length ? (
-          <h2>No playlists Yet!</h2>
-        ) : (
-        <ul>
-          {props.playlists.map((playlist) => (
-            <li key={playlist._id}>{playlist.name}</li>
+      <h1>Playlist List</h1>
+      {!playlists.length ? (
+        <h2>No playlists yet!</h2>
+      ) : (
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {playlists.map((playlist) => (
+            <li key={playlist._id} style={{ marginBottom: "8px" }}>
+              <a
+                href={`/playlists/${playlist._id}`}
+                style={{
+                  color: "#007bff",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+              >
+                {playlist.name}
+              </a>
+            </li>
           ))}
         </ul>
-        )}
-      </div>
+      )}
     </div>
   );
-}
+};
+
 export default PlaylistList;
