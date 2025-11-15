@@ -8,7 +8,8 @@ import * as songService from './services/songService';
 import AlbumDetail from './components/AlbumDetail/AlbumDetail';
 import PlaylistDetail from './components/PlaylistDetail/PlaylistDetail';
 import SongDetail from './components/SongDetail/SongDetail';
-
+import PlaylistList from './components/PlaylistList/PlaylistList'; // Import PlaylistList
+import CreatePlaylist from './components/CreatePlaylist/CreatePlaylist'; // Import CreatePlaylist
 
 import NavBar from './components/NavBar/NavBar';
 // Import the SignUpForm component
