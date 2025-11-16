@@ -26,6 +26,7 @@ const PlaylistDetailWrapper = ({ playlists }) => {
   return <PlaylistDetail selectedPlaylist={selectedPlaylist} />;
 };
 
+
 const App = () => {
   const { user } = useContext(UserContext);
   const [albums, setAlbums] = useState([]);
