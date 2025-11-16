@@ -32,7 +32,7 @@ const PlaylistDetail = ({ selectedPlaylist }) => {
         )}
         <p>Total Duration: {formatDuration(totalDuration)}</p>
 
-        {songs?.length > 0 ? (
+        {songs && songs.length > 0 ? (
           <div>
             <h3>Songs:</h3>
             <ul>

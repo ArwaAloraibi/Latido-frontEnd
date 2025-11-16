@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 const AlbumDetail = (props) => {
   const { selectedAlbum, playlists, onAddSongToPlaylist } = props;
-  const [selectedSongId, setSelectedSongId] = useState(null);
+  const [selectedSongIds, setSelectedSongIds] = useState([]);
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   if (!selectedAlbum) {
     return (
@@ -12,19 +13,45 @@ const AlbumDetail = (props) => {
       </div>
     );
   }
-  
-  const handleAddClick = () => {
-    if (selectedSongId && selectedPlaylistId) {
-      const song = selectedAlbum.songs.find(song => song._id === selectedSongId);
-      const playlist = playlists.find(pl => pl._id === selectedPlaylistId);
-      if (song && playlist) {
-        onAddSongToPlaylist(song, playlist);
-        alert(`Added "${song.name}" to playlist "${playlist.name}"`);
-        setSelectedSongId(null);
-        setSelectedPlaylistId(null);
-      }
+
+  const toggleSongSelection = (songId) => {
+    setSelectedSongIds((prevSelected) =>
+      prevSelected.includes(songId)
+        ? prevSelected.filter((id) => id !== songId)
+        : [...prevSelected, songId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedSongIds.length === selectedAlbum.songs.length) {
+      setSelectedSongIds([]);
     } else {
-      alert("Please select both a song and a playlist to add.");
+      setSelectedSongIds(selectedAlbum.songs.map((song) => song._id));
+    }
+  };
+
+  const handleAddClick = () => {
+    if (selectedSongIds.length === 0) {
+      setErrorMessage("Please select at least one song to add.");
+      return;
+    }
+    if (!selectedPlaylistId) {
+      setErrorMessage("Please select a playlist.");
+      return;
+    }
+    setErrorMessage("");
+
+    const songsToAdd = selectedAlbum.songs.filter((song) =>
+      selectedSongIds.includes(song._id)
+    );
+    const playlist = playlists.find((pl) => pl._id === selectedPlaylistId);
+
+    if (playlist) {
+      songsToAdd.forEach((song) => {
+        onAddSongToPlaylist(song, playlist);
+      });
+      setSelectedSongIds([]);
+      setSelectedPlaylistId(null);
     }
   };
 
@@ -33,7 +60,11 @@ const AlbumDetail = (props) => {
       <h1>Album Details</h1>
       <div>
         <h2>{selectedAlbum.name}</h2>
-        {selectedAlbum.artist && <p><strong>Artist:</strong> {selectedAlbum.artist}</p>}
+        {selectedAlbum.artist && (
+          <p>
+            <strong>Artist:</strong> {selectedAlbum.artist}
+          </p>
+        )}
         {selectedAlbum.coverImg && (
           <img
             src={selectedAlbum.coverImg}
@@ -41,14 +72,18 @@ const AlbumDetail = (props) => {
             style={{ maxWidth: "300px" }}
           />
         )}
-
         {selectedAlbum.songs && selectedAlbum.songs.length > 0 && (
           <div>
             <h3>Songs:</h3>
-            <ul>
-              {selectedAlbum.songs.map((song, index) => (
+            <button onClick={toggleSelectAll}>
+              {selectedSongIds.length === selectedAlbum.songs.length
+                ? "Deselect All"
+                : "Select All"}
+            </button>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {selectedAlbum.songs.map((song) => (
                 <li
-                  key={song._id || index}
+                  key={song._id}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -56,47 +91,76 @@ const AlbumDetail = (props) => {
                     marginBottom: "10px",
                   }}
                 >
+                  <input
+                    type="checkbox"
+                    checked={selectedSongIds.includes(song._id)}
+                    onChange={() => toggleSongSelection(song._id)}
+                    style={{ marginRight: "8px" }}
+                  />
                   {song.coverImg && (
                     <img
                       src={song.coverImg}
                       alt={song.name}
-                      style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        objectFit: "cover",
+                        borderRadius: "4px",
+                      }}
                     />
                   )}
-                  <div style={{ flex: 1 }}>
-                    <div><strong>{song.name}</strong></div>
-                    {song.artist && <div><small style={{ color: "#555" }}>Artist: {song.artist}</small></div>}
-                    {song.duration && <div><small style={{ color: "#888" }}>Duration: {song.duration} min</small></div>}
+                  <div>
+                    <div>
+                      <strong>{song.name}</strong>
+                    </div>
+                    {song.artist && (
+                      <div>
+                        <small style={{ color: "#555" }}>
+                          Artist: {song.artist}
+                        </small>
+                      </div>
+                    )}
+                    {song.duration && (
+                      <div>
+                        <small style={{ color: "#888" }}>
+                          Duration: {song.duration} min
+                        </small>
+                      </div>
+                    )}
                   </div>
-                  <input
-                    type="radio"
-                    name="selectedSong"
-                    checked={selectedSongId === song._id}
-                    onChange={() => setSelectedSongId(song._id)}
-                  />
                 </li>
               ))}
             </ul>
+
             <div style={{ marginTop: "10px" }}>
-              <label htmlFor="playlistSelect">Select Playlist:</label>
-              <select
-                id="playlistSelect"
-                value={selectedPlaylistId || ""}
-                onChange={(e) => setSelectedPlaylistId(e.target.value)}
-              >
-                <option value="" disabled>Select a playlist</option>
+              <label>Select Playlist:</label>
+              <div>
                 {playlists && playlists.length > 0 ? (
                   playlists.map((pl) => (
-                    <option key={pl._id} value={pl._id}>{pl.name}</option>
+                    <label key={pl._id} style={{ display: "block", marginBottom: "6px" }}>
+                      <input
+                        type="radio"
+                        name="playlist"
+                        value={pl._id}
+                        checked={selectedPlaylistId === pl._id}
+                        onChange={(e) => setSelectedPlaylistId(e.target.value)}
+                        style={{ marginRight: "8px" }}
+                      />
+                      {pl.name}
+                    </label>
                   ))
                 ) : (
-                  <option disabled>No playlists available</option>
+                  <p>No playlists available</p>
                 )}
-
-              </select>
-              <button onClick={handleAddClick} style={{ marginLeft: "10px" }}>
+              </div>
+              <button onClick={handleAddClick} style={{ marginTop: "10px" }}>
                 Add to Playlist
               </button>
+              {errorMessage && (
+                <div style={{ color: "red", marginTop: "10px" }}>
+                  {errorMessage}
+                </div>
+              )}
             </div>
           </div>
         )}
