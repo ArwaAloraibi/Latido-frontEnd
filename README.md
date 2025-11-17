@@ -1,6 +1,6 @@
 # Latido - Music Streaming Platform
 
-![Latido Logo](src/assets/latido%20logo.png)
+![Latido Logo](src/assets/latidologo.png)
 
 **Latido** is a modern, full-stack music streaming application built with the MERN stack. It provides a seamless experience for both artists and listeners, allowing artists to create and manage albums with MP3 uploads, while listeners can discover music, create playlists, and stream songs directly from the platform.
 
