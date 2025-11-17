@@ -102,7 +102,8 @@ The backend repository is required for full functionality. See the [Backend Repo
 
 ## 📸 Screenshots
 
-[Add screenshots of your application here]
+![Albums](https://i.imgur.com/eE5XRoN.png)
+![Songs](https://i.imgur.com/jswFQ9O.png)
 - Landing Page
 - Dashboard
 - Album Discovery
