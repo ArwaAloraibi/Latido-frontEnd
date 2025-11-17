@@ -1,6 +1,6 @@
 // src/App.jsx
 
-import { Routes, Route, useParams } from 'react-router'; // Import React Router
+import { Routes, Route, useParams } from 'react-router';
 import { useState, useEffect, useContext } from 'react';
 import * as albumService from './services/albumService';
 import * as playlistService from './services/playlistService';
@@ -19,78 +19,76 @@ import Dashboard from './components/Dashboard/Dashboard';
 import { UserContext } from './contexts/UserContext';
 import AlbumList from './components/AlbumList/AlbumList';
 import SongList from './components/SongList/SongList';
+import PlaylistDetailWrapper from './components/PlaylistDetailWrapper/PlaylistDetailWrapper';
 
-const PlaylistDetailWrapper = ({ playlists }) => {
-  const { playlistId } = useParams();
-  const selectedPlaylist = playlists.find((p) => p._id === playlistId);
-  return <PlaylistDetail selectedPlaylist={selectedPlaylist} />;
-};
+// // PlaylistDetailWrapper resolves song IDs to full objects using allSongs
+// const PlaylistDetailWrapper = ({ playlists, allSongs }) => {
+//   const { playlistId } = useParams();
+//   const playlist = playlists.find((p) => p._id === playlistId);
+//   if (!playlist) return <div>Playlist not found</div>;
 
+//   const populatedPlaylist = {
+//     ...playlist,
+//     songs: playlist.songs
+//       .map(id => allSongs.find(song => song._id === id))
+//       .filter(Boolean),
+//   };
+
+//   return <PlaylistDetail selectedPlaylist={populatedPlaylist} />;
+// };
 
 const App = () => {
   const { user } = useContext(UserContext);
   const [albums, setAlbums] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [playlists, setPlaylists] = useState([]);
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   const [songs, setSongs] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
 
   useEffect(() => {
-    const fetchAlbums = async () => {
+    (async () => {
       try {
-        const fetchedAlbums = await albumService.index();
-        if (fetchedAlbums.err) throw new Error(fetchedAlbums.err);
-        setAlbums(fetchedAlbums);
+        const data = await albumService.index();
+        setAlbums(data);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
-    };
-    fetchAlbums();
+    })();
   }, []);
 
   useEffect(() => {
-    const fetchplaylists = async () => {
+    (async () => {
       try {
-        const fetchedplaylists = await playlistService.index();
-        if (fetchedplaylists.err) throw new Error(fetchedplaylists.err);
-        setPlaylists(fetchedplaylists);
+        const data = await playlistService.index();
+        setPlaylists(data);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
-    };
-    fetchplaylists();
+    })();
   }, []);
 
   useEffect(() => {
-    const fetchsongs = async () => {
+    (async () => {
       try {
-        const fetchedsongs = await songService.index();
-        if (fetchedsongs.err) throw new Error(fetchedsongs.err);
-        setSongs(fetchedsongs);
+        const data = await songService.index();
+        setSongs(data);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
-    };
-    fetchsongs();
+    })();
   }, []);
 
-  const handleAddSongToPlaylist = (song, playlist) => {
-    setPlaylists((prevPlaylists) =>
-      prevPlaylists.map((pl) => {
-        if (pl._id === playlist._id) {
-          if (!pl.songs.some((s) => s._id === song._id)) {
-            return { ...pl, songs: [...pl.songs, song] };
-          }
-        }
-        return pl;
-      })
-    );
+  // Adds multiple songs to a playlist via backend API, then updates frontend state playlists
+  const handleAddSongsToPlaylist = async (songIds, playlist) => {
+    try {
+      const updatedPlaylist = await playlistService.addSongsToPlaylist(playlist._id, songIds);
+      setPlaylists((prev) =>
+        prev.map((pl) => (pl._id === updatedPlaylist._id ? updatedPlaylist : pl))
+      );
+    } catch (error) {
+      console.error('Failed to add songs:', error);
+    }
   };
-
-  const handleSelectAlbum = (album) => setSelectedAlbum(album);
-  const handleSelectPlaylist = (playlist) => setSelectedPlaylist(playlist);
-  const handleSelectSong = (song) => setSelectedSong(song);
 
   return (
     <>
@@ -99,12 +97,21 @@ const App = () => {
         {user ? (
           <>
             <Route path='/' element={<Dashboard />} />
-            <Route path='/albums' element={<AlbumList albums={albums} handleSelectAlbum={handleSelectAlbum} />} />
-            <Route path='/albums/:albumId' element={<AlbumDetail selectedAlbum={selectedAlbum} playlists={playlists} onAddSongToPlaylist={handleAddSongToPlaylist} />} />
-            <Route path='/playlists' element={<PlaylistList playlists={playlists} handleSelectPlaylist={handleSelectPlaylist} />} />
+            <Route path='/albums' element={<AlbumList albums={albums} handleSelectAlbum={setSelectedAlbum} />} />
+            <Route
+              path='/albums/:albumId'
+              element={
+                <AlbumDetail
+                  selectedAlbum={selectedAlbum}
+                  playlists={playlists}
+                  onAddSongsToPlaylist={handleAddSongsToPlaylist}
+                />
+              }
+            />
+            <Route path='/playlists' element={<PlaylistList playlists={playlists} />} />
             <Route path='/playlists/create' element={<CreatePlaylist />} />
             <Route path='/playlists/:playlistId' element={<PlaylistDetailWrapper playlists={playlists} allSongs={songs} />} />
-            <Route path='/songs' element={<SongList songs={songs} handleSelectSong={handleSelectSong} />} />
+            <Route path='/songs' element={<SongList songs={songs} />} />
             <Route path='/songs/:songId' element={<SongDetail selectedSong={selectedSong} />} />
             <Route path='/profile' element={<h1>{user.username}</h1>} />
           </>
