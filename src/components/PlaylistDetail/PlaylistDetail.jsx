@@ -18,6 +18,7 @@ const PlaylistDetail = ({ selectedPlaylist, albums = [], onPlaylistUpdate }) => 
   const [isEditingCover, setIsEditingCover] = useState(false);
   const [coverImg, setCoverImg] = useState(null);
   const [coverImgPreview, setCoverImgPreview] = useState(null);
+  
 
   if (!selectedPlaylist) {
     return (
