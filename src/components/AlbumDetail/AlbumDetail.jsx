@@ -140,6 +140,16 @@ const AlbumDetail = ({ selectedAlbum, playlists, onAddSongToPlaylist, onAlbumUpd
           <p><strong>Created by:</strong> {artistName}</p>
           <p><strong>Songs:</strong> {populatedSongs.length}</p>
           <p><strong>Duration:</strong> {formatDuration(calculateTotalDuration())}</p>
+          {/* Show Edit button if user is the owner */}
+          {isOwner && (
+            <button 
+              onClick={() => navigate(`/my-albums/${selectedAlbum._id}/edit`)} 
+              className="btn-secondary"
+              style={{ marginTop: '16px' }}
+            >
+              Edit Album
+            </button>
+          )}
         </div>
       </div>
 

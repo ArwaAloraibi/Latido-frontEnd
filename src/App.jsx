@@ -17,6 +17,7 @@ import PlaylistList from './components/PlaylistList/PlaylistList';
 import PlaylistDetail from './components/PlaylistDetail/PlaylistDetail';
 import CreatePlaylist from './components/CreatePlaylist/CreatePlaylist';
 import CreateAlbum from './components/CreateAlbum/CreateAlbum';
+import EditAlbum from './components/EditAlbum/EditAlbum';
 import MyAlbums from './components/MyAlbums/MyAlbums';
 import './App.css';
 
@@ -223,6 +224,12 @@ const App = () => {
                 <Route 
                   path='/my-albums/create' 
                   element={<CreateAlbum onAlbumUpdate={handleAlbumUpdate} />} 
+                />
+                
+                {/* Edit existing album page */}
+                <Route 
+                  path='/my-albums/:albumId/edit' 
+                  element={<EditAlbum albums={albums} onAlbumUpdate={handleAlbumUpdate} />} 
                 />
                 
                 {/* Old route redirects to new create album page */}

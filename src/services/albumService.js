@@ -105,8 +105,8 @@ export const createWithFiles = async (formData) => {
   }
 };
 
-// Update an existing album
-// This is for updating album name or other text fields
+// Update an existing album (JSON - for simple updates without files)
+// This is for updating album name or song list without file uploads
 export const update = async (albumId, updateData) => {
   try {
     const res = await fetch(`${BASE_URL}/${albumId}`, {
@@ -128,12 +128,21 @@ export const update = async (albumId, updateData) => {
   }
 };
 
-// Delete an album
-export const deleteAlbum = async (albumId) => {
+// Update an existing album with files (FormData)
+// This is used when updating album cover image or adding new songs with MP3 files
+// We don't set Content-Type header here - browser sets it automatically for FormData
+export const updateWithFiles = async (albumId, formData) => {
   try {
+    // Only include auth header, not Content-Type
+    // Browser will set Content-Type automatically with the boundary for FormData
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    };
+
     const res = await fetch(`${BASE_URL}/${albumId}`, {
-      method: 'DELETE',
-      headers: getHeaders()
+      method: 'PUT',
+      headers: headers,
+      body: formData
     });
 
     const data = await res.json();
@@ -146,5 +155,34 @@ export const deleteAlbum = async (albumId) => {
   } catch (err) {
     console.log(err);
     throw new Error(err);
+  }
+};
+
+// Delete an album
+export const deleteAlbum = async (albumId) => {
+  try {
+    console.log('Deleting album:', albumId); // Debug log
+    const res = await fetch(`${BASE_URL}/${albumId}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+
+    // Check if response is ok
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({ err: `HTTP error! status: ${res.status}` }));
+      throw new Error(errorData.err || `Failed to delete album: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    console.log('Delete response:', data); // Debug log
+
+    if (data.err) {
+      throw new Error(data.err);
+    }
+
+    return data;
+  } catch (err) {
+    console.error('Delete album error:', err);
+    throw new Error(err.message || 'Failed to delete album');
   }
 };
