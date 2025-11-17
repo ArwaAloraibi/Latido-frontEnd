@@ -4,7 +4,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
-import * as albumService from "../../services/albumService";
 
 const MyAlbums = ({ albums, onAlbumUpdate }) => {
   const { user } = useContext(UserContext);
@@ -31,31 +30,42 @@ const MyAlbums = ({ albums, onAlbumUpdate }) => {
     }
   }, [albums, user]);
 
-  // Handle album deletion
-  const handleDeleteAlbum = async (albumId) => {
-    // Ask for confirmation before deleting
-    if (!window.confirm("Are you sure you want to delete this album? This will delete all songs in the album.")) {
-      return;
-    }
 
-    try {
-      setError("");
-      // Call the delete API
-      const result = await albumService.deleteAlbum(albumId);
-      
-      if (result.err) throw new Error(result.err);
-      
-      // Refresh the albums list
-      if (onAlbumUpdate) onAlbumUpdate();
-      // Remove the deleted album from local state
-      setMyAlbums(myAlbums.filter(a => a._id !== albumId));
-    } catch (err) {
-      setError(err.message || "Failed to delete album");
+  // Handle edit button click
+  const handleEditClick = (e, albumId) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.nativeEvent) {
+        e.nativeEvent.stopImmediatePropagation();
+      }
     }
+    navigate(`/my-albums/${albumId}/edit`);
+  };
+
+  // Handle view button click
+  const handleViewClick = (e, album) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.nativeEvent) {
+        e.nativeEvent.stopImmediatePropagation();
+      }
+    }
+    navigate(`/albums/${album._id}`);
   };
 
   // Navigate to album detail page when album is clicked
-  const handleAlbumClick = (album) => {
+  // But only if the click wasn't on a button
+  const handleAlbumClick = (e, album) => {
+    // Check if the click was on a button or inside a button container
+    const target = e.target;
+    if (target.tagName === 'BUTTON' || 
+        target.closest('button') || 
+        target.closest('.btn-primary') || 
+        target.closest('.btn-secondary')) {
+      return; // Don't navigate if clicking a button
+    }
     navigate(`/albums/${album._id}`);
   };
 
@@ -111,23 +121,72 @@ const MyAlbums = ({ albums, onAlbumUpdate }) => {
             const totalDuration = calculateAlbumDuration(album);
 
             return (
-              <div key={album._id} className="card">
-                {/* Album cover image - clickable to view album */}
+              <div 
+                key={album._id} 
+                className="card" 
+                onClick={(e) => handleAlbumClick(e, album)}
+                style={{ cursor: 'pointer' }}
+              >
+                {/* Album cover image */}
                 {album.coverImg && (
-                  <img src={album.coverImg} alt={album.name} onClick={() => handleAlbumClick(album)} style={{ cursor: 'pointer' }} />
+                  <img src={album.coverImg} alt={album.name} />
                 )}
-                {/* Album name - also clickable */}
-                <h3 onClick={() => handleAlbumClick(album)} style={{ cursor: 'pointer' }}>{album.name}</h3>
+                {/* Album name */}
+                <h3>{album.name}</h3>
                 {/* Show song count and total duration */}
                 <p>{songCount} {songCount === 1 ? 'song' : 'songs'}</p>
                 <p>Duration: {formatDuration(totalDuration)}</p>
-                {/* Action buttons */}
-                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                  <button onClick={() => handleAlbumClick(album)} className="btn-primary">
+                {/* Action buttons container - completely isolated from card click */}
+                <div 
+                  style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.nativeEvent) {
+                      e.nativeEvent.stopImmediatePropagation();
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.nativeEvent) {
+                      e.nativeEvent.stopImmediatePropagation();
+                    }
+                  }}
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  <button 
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleViewClick(e, album);
+                    }} 
+                    className="btn-primary"
+                  >
                     View
                   </button>
-                  <button onClick={() => handleDeleteAlbum(album._id)} className="btn-danger">
-                    Delete
+                  <button 
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleEditClick(e, album._id);
+                    }} 
+                    className="btn-secondary"
+                  >
+                    Edit
                   </button>
                 </div>
               </div>
