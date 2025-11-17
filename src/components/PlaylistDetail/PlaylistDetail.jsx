@@ -4,7 +4,7 @@ import { UserContext } from "../../contexts/UserContext";
 import * as playlistService from "../../services/playlistService";
 import AudioPlayer from "../AudioPlayer/AudioPlayer";
 
-const PlaylistDetail = ({ selectedPlaylist, onPlaylistUpdate }) => {
+const PlaylistDetail = ({ selectedPlaylist, albums = [], onPlaylistUpdate }) => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const { playlistId } = useParams();
@@ -57,7 +57,87 @@ const PlaylistDetail = ({ selectedPlaylist, onPlaylistUpdate }) => {
       setIsPlaying(false);
       setCurrentSong(null);
     } else {
-      setCurrentSong(song);
+      // Try to get artist from song's album
+      // We need to find the album in our albums array and get the userId (artist) from it
+      let artist = null;
+      
+      // First, try to get album ID from the song
+      let albumId = null;
+      if (song.album) {
+        if (typeof song.album === 'object' && song.album._id) {
+          albumId = song.album._id;
+        } else if (typeof song.album === 'string') {
+          albumId = song.album;
+        }
+      }
+      
+      // If we have an album ID, find the album in our albums array
+      // The albums array should have userId populated with username
+      if (albumId && albums && albums.length > 0) {
+        const album = albums.find(a => {
+          // Try to match by _id, handling both string and object comparisons
+          if (a._id === albumId) return true;
+          if (typeof a._id === 'object' && a._id.toString() === albumId) return true;
+          if (typeof albumId === 'object' && a._id === albumId.toString()) return true;
+          return false;
+        });
+        
+        if (album && album.userId) {
+          // Get the userId - it should be an object with username if backend populated it
+          if (typeof album.userId === 'object' && album.userId.username) {
+            // userId is populated with username - use it
+            artist = album.userId;
+          }
+        }
+      }
+      
+      // If we still don't have artist and don't have albumId, try to find the album by searching through all albums
+      // This handles the case where song.album might not be set
+      if (!artist && !albumId && albums && albums.length > 0) {
+        // Search through all albums to find which one contains this song
+        for (const album of albums) {
+          if (album.songs && Array.isArray(album.songs)) {
+            const songInAlbum = album.songs.find(s => {
+              const songId = typeof s === 'object' ? s._id : s;
+              return songId === song._id;
+            });
+            if (songInAlbum && album.userId) {
+              // Found the album! Get the artist from it
+              if (typeof album.userId === 'object' && album.userId.username) {
+                artist = album.userId;
+                break; // Found it, stop searching
+              }
+            }
+          }
+        }
+      }
+      
+      // If we still don't have artist, try song.album.userId directly (in case it's populated)
+      if (!artist && song.album && typeof song.album === 'object' && song.album.userId) {
+        if (typeof song.album.userId === 'object' && song.album.userId.username) {
+          artist = song.album.userId;
+        }
+      }
+      
+      // If we still don't have artist, try song.artist directly
+      if (!artist && song.artist) {
+        if (typeof song.artist === 'object' && song.artist.username) {
+          artist = song.artist;
+        }
+      }
+      
+      // Attach artist information to the song
+      // Make sure we only attach if artist is an object with username, never a string ID
+      const songWithArtist = {
+        ...song,
+        // Only set artist if it's an object with username, otherwise set to null
+        artist: (artist && typeof artist === 'object' && artist.username) 
+          ? artist 
+          : (song.artist && typeof song.artist === 'object' && song.artist.username) 
+            ? song.artist 
+            : null
+      };
+      setCurrentSong(songWithArtist);
       setIsPlaying(true);
     }
   };

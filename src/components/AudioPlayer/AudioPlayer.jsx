@@ -100,8 +100,41 @@ const AudioPlayer = ({ song, isPlaying, onPlay, onPause, onEnd }) => {
       <div className="audio-player-info">
         <div className="audio-player-title">{song.name || 'Unknown Song'}</div>
         <div className="audio-player-artist">
-          {/* Show artist name if available */}
-          {song.artist && typeof song.artist === 'object' ? song.artist.username : 'Unknown Artist'}
+          {/* Show artist name - check multiple possible locations */}
+          {(() => {
+            // Try to get artist from different possible locations
+            if (song.artist) {
+              // If artist is an object with username, use it
+              if (typeof song.artist === 'object' && song.artist.username) {
+                return song.artist.username;
+              }
+              // If artist is a string, it might be a username or userId
+              // If it looks like an ObjectId (24 hex characters), it's probably a userId
+              if (typeof song.artist === 'string') {
+                // Check if it's an ObjectId (MongoDB IDs are 24 hex characters)
+                if (song.artist.length === 24 && /^[0-9a-fA-F]{24}$/.test(song.artist)) {
+                  // It's a userId, not a username - we can't display it
+                  // Try to get from album instead
+                } else {
+                  // It's probably a username string
+                  return song.artist;
+                }
+              }
+            }
+            // Try to get artist from album if song has album info
+            if (song.album && typeof song.album === 'object') {
+              if (song.album.userId) {
+                if (typeof song.album.userId === 'object' && song.album.userId.username) {
+                  return song.album.userId.username;
+                }
+                // If userId is a string (ObjectId), we can't get username from it
+                if (typeof song.album.userId === 'string' && song.album.userId.length === 24) {
+                  // It's an ObjectId, can't display it
+                }
+              }
+            }
+            return 'Unknown Artist';
+          })()}
         </div>
       </div>
 

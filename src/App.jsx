@@ -22,11 +22,11 @@ import './App.css';
 
 // Wrapper component to pass the selected playlist to PlaylistDetail
 // We need this because we get the playlistId from the URL params
-const PlaylistDetailWrapper = ({ playlists, onPlaylistUpdate }) => {
+const PlaylistDetailWrapper = ({ playlists, albums, onPlaylistUpdate }) => {
   const { playlistId } = useParams();
   // Find the playlist that matches the ID from the URL
   const selectedPlaylist = playlists.find((p) => p._id === playlistId);
-  return <PlaylistDetail selectedPlaylist={selectedPlaylist} onPlaylistUpdate={onPlaylistUpdate} />;
+  return <PlaylistDetail selectedPlaylist={selectedPlaylist} albums={albums} onPlaylistUpdate={onPlaylistUpdate} />;
 };
 
 // Wrapper component to pass the selected album to AlbumDetail
@@ -248,17 +248,15 @@ const App = () => {
             {/* Playlist detail page - shows songs in a playlist */}
             <Route 
               path='/playlists/:playlistId' 
-              element={<PlaylistDetailWrapper playlists={playlists} onPlaylistUpdate={handlePlaylistUpdate} />} 
+              element={<PlaylistDetailWrapper playlists={playlists} albums={albums} onPlaylistUpdate={handlePlaylistUpdate} />} 
             />
             
             {/* Profile page - simple for now */}
             <Route path='/profile' element={<h1>{user.username}</h1>} />
           </>
         ) : (
-          <>
-          {/* If not logged in, show landing page */}
+          // If not logged in, show landing page
           <Route path='/' element={<Landing />} />
-          </>
         )}
         
         {/* Sign up and sign in pages - available to everyone */}

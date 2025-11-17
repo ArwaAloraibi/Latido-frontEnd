@@ -104,7 +104,12 @@ const AlbumDetail = ({ selectedAlbum, playlists, onAddSongToPlaylist, onAlbumUpd
       setIsPlaying(false);
       setCurrentSong(null);
     } else {
-      setCurrentSong(song);
+      // Attach artist information from the album to the song
+      const songWithArtist = {
+        ...song,
+        artist: selectedAlbum.userId || song.artist
+      };
+      setCurrentSong(songWithArtist);
       setIsPlaying(true);
     }
   };
